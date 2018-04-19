@@ -11,28 +11,18 @@ public class Security {
     }
 
     public boolean hasAccess(User user, Permission permission, ImmutableList<Permission> permissions) {
-
-        boolean isAccess = false;
-        if (user == null) {
-            return isAccess;
+        // Consolidate Conditional Expression 合并条件表达式
+        if (isLegalInput(user, permission, permissions) && isAccess(user, permission, permissions)) {
+            return true; // Replaced Nested Conditional with Guard Clauses 以卫语句取代嵌套条件表达式
         }
+        return false;
+    }
 
-        if (permission == null) {
-            return isAccess;
-        }
+    private boolean isLegalInput(User user, Permission permission, ImmutableList<Permission> permissions) {
+        return ((user != null) && (permission != null) && (permissions.size() > 0));
+    }
 
-        if (permissions.size() == 0) {
-            return isAccess;
-        }
-
-        if (securityChecker.isAdmin()) {
-            isAccess = true;
-        }
-
-        if (this.securityChecker.checkPermission(user, permission) || permissions.contains(permission)) {
-            isAccess = true;
-        }
-
-        return isAccess;
+    private boolean isAccess(User user, Permission permission, ImmutableList<Permission> permissions) {
+        return (securityChecker.isAdmin() || securityChecker.checkPermission(user, permission) || permissions.contains(permission));
     }
 }
